@@ -54,13 +54,21 @@ function ensureSeeded(conn: Database.Database) {
       `INSERT INTO User (id, workplaceId, role, name, email, passwordHash, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
-    insertUser.run('usr_admin', workplaceId, 'ADMIN', 'Lewis Sr', 'admin@demo.com', passwordHash, now, now);
-    insertUser.run('usr_caf1', workplaceId, 'CAFETERIA_OWNER', 'Robert Jr', 'cafeteria@demo.com', passwordHash, now, now);
-    insertUser.run('usr_caf2', workplaceId, 'CAFETERIA_OWNER', 'Tommy Jr', 'techbites@demo.com', passwordHash, now, now);
-    insertUser.run('usr_chg', workplaceId, 'CHARGING_OWNER', 'Anne Jr', 'charging@demo.com', passwordHash, now, now);
-    insertUser.run('usr_emp1', workplaceId, 'EMPLOYEE', 'John Jr', 'employee@demo.com', passwordHash, now, now);
-    insertUser.run('usr_emp2', workplaceId, 'EMPLOYEE', 'Holland Jr', 'holland@demo.com', passwordHash, now, now);
-    insertUser.run('usr_emp3', workplaceId, 'EMPLOYEE', 'Emma Jr', 'emma@demo.com', passwordHash, now, now);
+    const adminId = 'usr_admin';
+    const caf1Id = 'usr_caf1';
+    const caf2Id = 'usr_caf2';
+    const chgId = 'usr_chg';
+    const emp1Id = 'usr_emp1';
+    const emp2Id = 'usr_emp2';
+    const emp3Id = 'usr_emp3';
+
+    insertUser.run(adminId, workplaceId, 'ADMIN', 'Lewis Sr', 'admin@demo.com', passwordHash, now, now);
+    insertUser.run(caf1Id, workplaceId, 'CAFETERIA_OWNER', 'Robert Jr', 'cafeteria@demo.com', passwordHash, now, now);
+    insertUser.run(caf2Id, workplaceId, 'CAFETERIA_OWNER', 'Tommy Jr', 'techbites@demo.com', passwordHash, now, now);
+    insertUser.run(chgId, workplaceId, 'CHARGING_OWNER', 'Anne Jr', 'charging@demo.com', passwordHash, now, now);
+    insertUser.run(emp1Id, workplaceId, 'EMPLOYEE', 'John Jr', 'employee@demo.com', passwordHash, now, now);
+    insertUser.run(emp2Id, workplaceId, 'EMPLOYEE', 'Holland Jr', 'holland@demo.com', passwordHash, now, now);
+    insertUser.run(emp3Id, workplaceId, 'EMPLOYEE', 'Emma Jr', 'emma@demo.com', passwordHash, now, now);
 
     const cyberCafeId = 'caf_cyber_cafe';
     const techBitesId = 'caf_tech_bites';
@@ -69,34 +77,117 @@ function ensureSeeded(conn: Database.Database) {
       .prepare(
         `INSERT INTO Cafeteria (id, workplaceId, ownerId, name, description, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, 'OPEN', ?, ?)`
       )
-      .run(cyberCafeId, workplaceId, 'usr_caf1', 'Cyber Café', 'The main campus cafeteria.', now, now);
+      .run(cyberCafeId, workplaceId, caf1Id, 'Cyber Café', 'The main campus cafeteria, known for its Chicken Biryani and filter coffee.', now, now);
 
     conn
       .prepare(
         `INSERT INTO Cafeteria (id, workplaceId, ownerId, name, description, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, 'OPEN', ?, ?)`
       )
-      .run(techBitesId, workplaceId, 'usr_caf2', 'Tech Bites', 'Quick bites and continental favorites.', now, now);
+      .run(techBitesId, workplaceId, caf2Id, 'Tech Bites', 'Quick bites and continental favorites for the second-floor crowd.', now, now);
+
+    const cyberCafeItems = [
+      { id: 'm1', name: 'Chicken Biryani', category: 'Lunch', price: 150, prep: 20, desc: 'Fragrant basmati rice with tender chicken and aromatic spices.' },
+      { id: 'm2', name: 'Veg Meals', category: 'Lunch', price: 90, prep: 15, desc: 'Rice, sambar, rasam, two curries, and papadam.' },
+      { id: 'm3', name: 'Chicken Fried Rice', category: 'Lunch', price: 130, prep: 15, desc: 'Wok-tossed rice with chicken, egg, and spring onion.' },
+      { id: 'm4', name: 'Masala Dosa', category: 'Breakfast', price: 60, prep: 12, desc: 'Crisp rice crepe with spiced potato filling and chutney.' },
+      { id: 'm5', name: 'Samosa', category: 'Snacks', price: 20, prep: 5, desc: 'Crispy pastry with spiced potato and pea filling.' },
+      { id: 'm6', name: 'Tea', category: 'Beverages', price: 15, prep: 3, desc: 'Classic spiced milk tea.' },
+      { id: 'm7', name: 'Filter Coffee', category: 'Beverages', price: 20, prep: 3, desc: 'South Indian filter coffee, strong and frothy.' },
+      { id: 'm8', name: 'Fresh Lime Juice', category: 'Beverages', price: 40, prep: 4, desc: 'Refreshing lime juice, sweet or salted.' },
+      { id: 'm9', name: 'Gulab Jamun', category: 'Desserts', price: 35, prep: 2, desc: 'Warm milk-solid dumplings in sugar syrup.' },
+      { id: 'm10', name: 'Chicken 65', category: 'Snacks', price: 100, prep: 15, desc: "Spicy deep-fried chicken bites. Today's batch sold out fast.", available: 0 },
+    ];
+
+    const techBitesItems = [
+      { id: 'm11', name: 'Shawarma', category: 'Specials', price: 110, prep: 12, desc: 'Grilled chicken shawarma wrap with garlic sauce.' },
+      { id: 'm12', name: 'Pasta Arrabbiata', category: 'Lunch', price: 120, prep: 15, desc: 'Penne pasta in a spicy tomato sauce.' },
+      { id: 'm13', name: 'Veg Sandwich', category: 'Snacks', price: 50, prep: 8, desc: 'Grilled sandwich with fresh vegetables and mint chutney.' },
+      { id: 'm14', name: 'Chicken Roll', category: 'Snacks', price: 80, prep: 10, desc: 'Spiced chicken wrapped in a soft paratha.' },
+      { id: 'm15', name: 'Cold Coffee', category: 'Beverages', price: 50, prep: 5, desc: 'Blended cold coffee topped with ice cream.' },
+      { id: 'm16', name: 'Chocolate Brownie', category: 'Desserts', price: 45, prep: 3, desc: 'Fudgy brownie served warm.' },
+    ];
 
     const insertMenu = conn.prepare(
-      `INSERT INTO MenuItem (id, cafeteriaId, name, description, price, category, preparationTime, available, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`
+      `INSERT INTO MenuItem (id, cafeteriaId, name, description, price, category, preparationTime, available, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
 
-    insertMenu.run('menu_biryani', cyberCafeId, 'Chicken Biryani', 'Fragrant basmati rice with tender chicken.', 150, 'Lunch', 20, now, now);
-    insertMenu.run('menu_coffee', cyberCafeId, 'Filter Coffee', 'South Indian filter coffee, strong and frothy.', 20, 'Beverages', 3, now, now);
-    insertMenu.run('menu_shawarma', techBitesId, 'Shawarma', 'Grilled chicken shawarma wrap.', 110, 'Specials', 12, now, now);
+    for (const item of cyberCafeItems) {
+      insertMenu.run(item.id, cyberCafeId, item.name, item.desc, item.price, item.category, item.prep, item.available ?? 1, now, now);
+    }
+    for (const item of techBitesItems) {
+      insertMenu.run(item.id, techBitesId, item.name, item.desc, item.price, item.category, item.prep, 1, now, now);
+    }
+
+    const insertOrder = conn.prepare(
+      `INSERT INTO "Order" (id, customerId, cafeteriaId, status, pickupTime, total, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    );
+    const insertLine = conn.prepare(
+      `INSERT INTO OrderItem (id, orderId, menuItemId, name, quantity, price) VALUES (?, ?, ?, ?, ?, ?)`
+    );
+
+    insertOrder.run('ord_1', emp1Id, cyberCafeId, 'PREPARING', now, 170, now, now);
+    insertLine.run('li_1', 'ord_1', 'm1', 'Chicken Biryani', 1, 150);
+    insertLine.run('li_2', 'ord_1', 'm7', 'Filter Coffee', 1, 20);
+
+    insertOrder.run('ord_2', emp1Id, cyberCafeId, 'COMPLETED', now, 90, now, now);
+    insertLine.run('li_3', 'ord_2', 'm2', 'Veg Meals', 1, 90);
+
+    insertOrder.run('ord_3', emp2Id, cyberCafeId, 'PLACED', now, 260, now, now);
+    insertLine.run('li_4', 'ord_3', 'm3', 'Chicken Fried Rice', 2, 130);
+
+    insertOrder.run('ord_4', emp3Id, techBitesId, 'READY', now, 110, now, now);
+    insertLine.run('li_5', 'ord_4', 'm11', 'Shawarma', 1, 110);
+
+    const insertReq = conn.prepare(
+      `INSERT INTO FoodRequest (id, customerId, cafeteriaId, name, description, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    );
+    insertReq.run('req_1', emp1Id, cyberCafeId, 'Artisan Paratha with Steak Curry', 'Would love to see this on the weekend specials menu.', 'PLANNED', now, now);
+    insertReq.run('req_2', emp2Id, cyberCafeId, 'Idiyappam with Egg Curry', 'A lighter breakfast option would be great.', 'SUBMITTED', now, now);
+    insertReq.run('req_3', emp3Id, techBitesId, 'Falafel Wrap', 'Great vegan option', 'ADDED_TO_MENU', now, now);
+
+    conn.prepare(
+      `INSERT INTO Poll (id, cafeteriaId, title, description, startDate, endDate, active, createdAt) VALUES (?, ?, ?, ?, ?, ?, 1, ?)`
+    ).run('poll_1', cyberCafeId, "What should tomorrow's special be?", 'Vote for the dish you want to see on tomorrow\'s Cyber Café specials board.', now, now, now);
+
+    const insertOpt = conn.prepare(`INSERT INTO PollOption (id, pollId, option) VALUES (?, ?, ?)`);
+    insertOpt.run('opt_1', 'poll_1', 'Chicken Biryani');
+    insertOpt.run('opt_2', 'poll_1', 'Fried Rice');
+    insertOpt.run('opt_3', 'poll_1', 'Shawarma');
+    insertOpt.run('opt_4', 'poll_1', 'Pasta');
+
+    const insertVote = conn.prepare(`INSERT INTO PollVote (id, pollId, optionId, userId, createdAt) VALUES (?, ?, ?, ?, ?)`);
+    insertVote.run('v_1', 'poll_1', 'opt_1', emp2Id, now);
+    insertVote.run('v_2', 'poll_1', 'opt_2', emp3Id, now);
 
     const stationId = 'st_main_zone';
-    conn
-      .prepare(
-        `INSERT INTO ChargingStation (id, workplaceId, ownerId, name, location, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)`
-      )
-      .run(stationId, workplaceId, 'usr_chg', 'Main EV Charging Zone', 'Basement parking, Block C', now, now);
+    conn.prepare(
+      `INSERT INTO ChargingStation (id, workplaceId, ownerId, name, location, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, ?)`
+    ).run(stationId, workplaceId, chgId, 'Main EV Charging Zone', 'Basement parking, Block C', now, now);
 
-    conn
-      .prepare(
-        `INSERT INTO Charger (id, stationId, name, connectorType, power, price, operatingHoursStart, operatingHoursEnd, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'AVAILABLE', ?, ?)`
-      )
-      .run('chg_a1', stationId, 'Charger A1', 'Type 2', 22, 50, '08:00', '20:00', now, now);
+    const insertCharger = conn.prepare(
+      `INSERT INTO Charger (id, stationId, name, connectorType, power, price, operatingHoursStart, operatingHoursEnd, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    );
+    insertCharger.run('chg_a1', stationId, 'Charger A1', 'Type 2', 22, 50, '08:00', '20:00', 'AVAILABLE', now, now);
+    insertCharger.run('chg_a2', stationId, 'Charger A2', 'CCS2', 50, 80, '08:00', '20:00', 'AVAILABLE', now, now);
+    insertCharger.run('chg_b1', stationId, 'Charger B1', 'Type 2', 22, 50, '08:00', '20:00', 'OFFLINE', now, now);
+
+    conn.prepare(
+      `INSERT INTO ChargingReservation (id, chargerId, userId, date, startTime, endTime, amount, paymentStatus, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, 'PAID', 'UPCOMING', ?)`
+    ).run('res_1', 'chg_a1', emp2Id, '2026-08-15', '10:00', '11:00', 50, now);
+
+    const insertNotif = conn.prepare(
+      `INSERT INTO Notification (id, userId, title, message, type, link, read, createdAt) VALUES (?, ?, ?, ?, ?, ?, 0, ?)`
+    );
+    insertNotif.run('notif_1', emp1Id, 'Welcome to the platform', "You're all set, John Jr. Browse today's menu or reserve an EV charging slot to get started.", 'SYSTEM', null, now);
+    insertNotif.run('notif_2', emp1Id, 'Order #ORD_1 update', 'Your food is being prepared.', 'ORDER', '/employee/orders', now);
+    insertNotif.run('notif_3', caf1Id, 'New order received', 'John Jr placed an order worth ₹170 for pickup at 1:30 PM.', 'ORDER', '/cafeteria-owner/orders', now);
+    insertNotif.run('notif_4', chgId, 'New charging reservation', 'Holland Jr booked Charger A1.', 'CHARGING', '/charging-owner/reservations', now);
+
+    const insertAudit = conn.prepare(
+      `INSERT INTO AuditLog (id, userId, action, entity, entityId, timestamp) VALUES (?, ?, ?, ?, ?, ?)`
+    );
+    insertAudit.run('aud_1', adminId, 'Platform seeded with demo data', 'System', null, now);
+    insertAudit.run('aud_2', emp1Id, 'User registered', 'User', emp1Id, now);
 
     conn.exec('COMMIT');
   } catch (error) {
