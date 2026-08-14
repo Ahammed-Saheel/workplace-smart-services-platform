@@ -37,8 +37,9 @@ export function zodFail(error: ZodError) {
 
 export function serverError(err: unknown) {
   console.error('[API ERROR]', err);
+  const detail = err instanceof Error ? err.message : String(err);
   return fail(
-    'Something went wrong on our end. Please try again in a moment.',
+    `Something went wrong (${detail}). Please try again.`,
     500
   );
 }
