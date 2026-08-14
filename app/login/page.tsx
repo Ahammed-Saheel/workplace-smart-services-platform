@@ -56,8 +56,8 @@ function LoginForm() {
       }
       toast({ kind: 'success', title: `Welcome back, ${json.data.user.name.split(' ')[0]}!` });
       const next = params.get('next');
-      router.push(next ?? ROLE_HOME[json.data.user.role] ?? '/');
-      router.refresh();
+      const targetUrl = next ?? ROLE_HOME[json.data.user.role] ?? '/';
+      window.location.href = targetUrl;
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {

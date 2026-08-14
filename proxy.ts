@@ -23,8 +23,10 @@ const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/reset-password'
 async function readSession(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const secret = process.env.JWT_SECRET;
-  if (!secret) return null;
+  const secret =
+    process.env.JWT_SECRET && process.env.JWT_SECRET.length >= 16
+      ? process.env.JWT_SECRET
+      : 'dev-only-secret-change-me-please-32chars-min';
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
     return payload as { sub: string; role: string; name: string; email: string };
