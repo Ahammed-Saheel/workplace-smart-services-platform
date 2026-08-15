@@ -471,7 +471,7 @@ function CtaDemo() {
           </div>
           <div className="rounded-2xl bg-ink-50 p-5">
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-ink-400">
-              Demo accounts · password for all: <span className="font-mono text-ink-600">{DEMO_PASSWORD}</span>
+              Demo accounts · password for all: <span className="font-mono normal-case text-ink-600">{DEMO_PASSWORD}</span>
             </p>
             <div className="space-y-2">
               {accounts.map((a) => (
